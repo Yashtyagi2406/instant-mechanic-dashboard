@@ -1,0 +1,48 @@
+services:
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: instant-mechanic-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: instant_mechanic
+      POSTGRES_PASSWORD: instant_mechanic_dev
+      POSTGRES_DB: instant_mechanic_dashboard
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U instant_mechanic -d instant_mechanic_dashboard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend API ─────────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: instant-mechanic-api
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgresql://instant_mechanic:instant_mechanic_dev@postgres:5432/instant_mechanic_dashboard
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      DISABLE_SIMULATOR: "false"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # Run migrations and seed, then start the server
+    command: >
+      sh -c "
+        npx prisma@5 migrate deploy &&
+        node dist/index.js
+      "
+
+volumes:
+  pgdata:
