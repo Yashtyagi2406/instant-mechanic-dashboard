@@ -1,0 +1,30 @@
+{
+  "name": "instant-mechanic-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Instant Mechanic — Live Operations Dashboard (Monorepo)",
+  "scripts": {
+    "dev": "npm run dev:backend & npm run dev:frontend",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build",
+    "build:backend": "npm --prefix backend run build",
+    "build:frontend": "npm --prefix frontend run build",
+    "seed": "npm --prefix backend run seed",
+    "db:migrate": "npm --prefix backend run db:migrate",
+    "db:push": "npm --prefix backend run db:push",
+    "db:generate": "npm --prefix backend run db:generate",
+    "install:all": "npm install --prefix backend && npm install --prefix frontend"
+  },
+  "keywords": [
+    "dashboard",
+    "nextjs",
+    "express",
+    "socket.io",
+    "prisma",
+    "postgresql",
+    "typescript"
+  ],
+  "author": "Yash Tyagi",
+  "license": "MIT"
+}
