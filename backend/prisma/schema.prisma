@@ -1,0 +1,129 @@
+// Prisma schema for Instant Mechanic Live Operations Dashboard
+// Normalized PostgreSQL schema covering all entities required by the spec.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Customers ─────────────────────────────────────────────────────────────────
+model Customer {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  phone     String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  bookings  Booking[]
+
+  @@map("customers")
+}
+
+// ── Services ──────────────────────────────────────────────────────────────────
+// A service catalog entry — e.g. "Oil Change", "Brake Repair"
+model Service {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  category  String    // Groups like "Maintenance", "Repair", "Electrical"
+  basePrice Decimal   @map("base_price") @db.Decimal(10, 2)
+  createdAt DateTime  @default(now()) @map("created_at")
+  bookings  Booking[]
+
+  @@map("services")
+}
+
+// ── Mechanics ─────────────────────────────────────────────────────────────────
+model Mechanic {
+  id               String          @id @default(uuid())
+  name             String
+  email            String          @unique
+  phone            String
+  status           MechanicStatus  @default(AVAILABLE)
+  jobsCompleted    Int             @default(0) @map("jobs_completed")
+  currentBookingId String?         @map("current_booking_id")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+  bookings         Booking[]
+
+  @@map("mechanics")
+}
+
+enum MechanicStatus {
+  AVAILABLE
+  BUSY
+  OFF_DUTY
+}
+
+// ── Bookings ──────────────────────────────────────────────────────────────────
+// Core entity — ties a customer, mechanic, vehicle, and service together.
+model Booking {
+  id               String                @id @default(uuid())
+  customerId       String                @map("customer_id")
+  mechanicId       String?               @map("mechanic_id")  // null until assigned
+  serviceId        String                @map("service_id")
+  vehicleMake      String                @map("vehicle_make")
+  vehicleModel     String                @map("vehicle_model")
+  vehicleYear      Int                   @map("vehicle_year")
+  vehiclePlate     String                @map("vehicle_plate")
+  status           BookingStatus         @default(PENDING)
+  amount           Decimal               @db.Decimal(10, 2)
+  scheduledAt      DateTime              @map("scheduled_at")
+  createdAt        DateTime              @default(now()) @map("created_at")
+  updatedAt        DateTime              @updatedAt @map("updated_at")
+
+  customer         Customer              @relation(fields: [customerId], references: [id])
+  mechanic         Mechanic?             @relation(fields: [mechanicId], references: [id])
+  service          Service               @relation(fields: [serviceId], references: [id])
+  statusHistory    BookingStatusHistory[]
+
+  @@index([customerId])
+  @@index([mechanicId])
+  @@index([serviceId])
+  @@index([status])
+  @@index([scheduledAt])
+  @@map("bookings")
+}
+
+enum BookingStatus {
+  PENDING
+  ASSIGNED
+  MECHANIC_ON_THE_WAY
+  COMPLETED
+  CANCELLED
+}
+
+// ── Booking Status History ────────────────────────────────────────────────────
+// Every status transition is logged here — powers the "live feed" feel.
+model BookingStatusHistory {
+  id        String        @id @default(uuid())
+  bookingId String        @map("booking_id")
+  oldStatus BookingStatus? @map("old_status")
+  newStatus BookingStatus  @map("new_status")
+  changedAt DateTime      @default(now()) @map("changed_at")
+  note      String?       // Optional note on why the status changed
+
+  booking   Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+  @@map("booking_status_history")
+}
+
+// ── Users (internal ops team — for JWT auth) ──────────────────────────────────
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         UserRole @default(OPERATOR)
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  OPERATOR
+}
