@@ -12,7 +12,6 @@
  * Run: npx ts-node prisma/seed.ts   (or via "prisma": { "seed": "..." } in package.json)
  */
 
-import process from "node:process";
 import { PrismaClient, BookingStatus, MechanicStatus, UserRole } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import bcrypt from "bcryptjs";
@@ -240,6 +239,8 @@ async function main() {
 main()
   .catch((e) => {
     console.error(e);
-    process.exit(1);
+    throw e;
   })
-  .finally(() => prisma.$disconnect());
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
