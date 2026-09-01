@@ -82,6 +82,17 @@ app.use("/api/mechanics", mechanicsRoutes);
 app.use("/api/customers", customersRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
+// Root route
+app.get("/", (_req, res) => {
+  res.json({
+    name: "Instant Mechanic — Operations API",
+    version: "1.0.0",
+    documentation: "/api/docs",
+    health: "/health",
+    frontend: corsOrigin,
+  });
+});
+
 // Health check — useful for Docker/EC2 ALB health checks
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
