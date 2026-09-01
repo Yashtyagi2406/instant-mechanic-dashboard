@@ -12,6 +12,7 @@
  * Run: npx ts-node prisma/seed.ts   (or via "prisma": { "seed": "..." } in package.json)
  */
 
+import process from "node:process";
 import { PrismaClient, BookingStatus, MechanicStatus, UserRole } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import bcrypt from "bcryptjs";
