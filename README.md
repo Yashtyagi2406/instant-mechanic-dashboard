@@ -219,8 +219,16 @@ All protected routes require `Authorization: Bearer <token>`.
 
 ### Backend → AWS EC2
 
-See [`DEPLOYMENT.md`](./DEPLOYMENT.md) for the full step-by-step EC2 runbook
-covering Docker, nginx reverse proxy, and Certbot TLS.
+1. Launch an EC2 instance (t2.micro on Amazon Linux 2023 or Ubuntu 22.04) with Docker & Docker Compose installed.
+2. Clone repository & configure backend environment variables in `backend/.env`.
+3. Start the services with Docker:
+   ```bash
+   docker compose up -d --build
+   docker compose exec backend npm run db:migrate
+   docker compose exec backend npm run seed
+   ```
+4. Configure Nginx reverse proxy on port 80/443 pointing to `http://localhost:4000` with WebSocket upgrade headers (`Upgrade $http_upgrade`, `Connection "upgrade"`).
+5. Configure SSL certificate with Certbot: `sudo certbot --nginx -d api.YOUR_DOMAIN.com`.
 
 **Live URLs** *(fill in after deployment)*:
 - Frontend: https://instant-mechanic-dashboard.vercel.app

@@ -9,3 +9,4 @@ build/
 coverage/
 .vercel/
 prisma/migrations/dev.db
+DEPLOYMENT.md
