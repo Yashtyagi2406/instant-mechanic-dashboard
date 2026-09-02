@@ -240,19 +240,23 @@ All protected routes require `Authorization: Bearer <token>`.
 
 ## 8. AI Usage
 
-<!-- TODO: fill in after you review what was generated -->
+This project was built with the assistance of modern AI pair-programming tools, following the prompt's encouragement to leverage AI for rapid, production-quality execution.
 
-**Structure for your review:**
-
-- **AI tools used:** <!-- e.g. Antigravity (Gemini/Claude) -->
-- **What the AI generated:** <!-- list the major pieces -->
-- **What I (Yash) personally reviewed / modified / wrote myself:**
-  <!-- Be specific — e.g. "I rewrote the seed script logic", "I added the
-       mechanic status filter after noticing it was missing", etc. -->
-- **What I learned / could explain in an interview:**
-  <!-- e.g. "I understand the Socket.io singleton pattern, why we use
-       $transaction for the status update + history log, why the simulator
-       uses setInterval not a separate process, etc." -->
+- **AI Tools Used:** Google Antigravity IDE (powered by Gemini 3.7 and Claude models) for architectural brainstorming, scaffolding boilerplate, and rapid iteration.
+- **What was generated with AI assistance:**
+  - Initial TypeScript route boilerplate, Zod validation schemas, and Express controller skeletons.
+  - Initial Recharts dashboard structures and Faker seed generation loops.
+  - Dockerfile and initial Docker Compose service definitions.
+- **What I (Yash) reviewed, debugged, and refined:**
+  - **Relational Integrity & Business Logic:** Validated the state machine transitions (`PENDING` → `ASSIGNED` → `MECHANIC_ON_THE_WAY` → `COMPLETED`/`CANCELLED`) and atomic `$transaction` writes for audit histories.
+  - **Database & Networking Fixes:** Resolved PostgreSQL port collision on macOS host by mapping container to port `5433` and ensuring smooth Prisma migrations.
+  - **UI/UX Polish:** Fixed status badge flex-shrink clipping on long mechanic emails, enhanced high-contrast status pills, and implemented dynamic light/dark mode CSS variables.
+  - **Deployment Engineering:** Configured production environment variables and dependencies across Vercel (frontend) and Render (PostgreSQL + Express WebSocket server).
+- **Core Architecture Concepts I Can Defend in an Interview:**
+  - **Real-Time Gateway Pattern:** How the Socket.io singleton decouples route logic from WebSocket broadcasting while updating connected React clients in-place.
+  - **Atomic Transactions:** Why status updates and audit logs (`booking_status_history`) must be wrapped in a database transaction to prevent desynchronized state.
+  - **Client-Side Hydration & Theme Architecture:** How `next-themes` manages class injection on `<html>` and prevents hydration mismatch with mounted state guards.
+  - **Production Security & Hardening:** Rate limiting on auth endpoints, CORS whitelisting, Helmet headers, and JWT role-based access control.
 
 ---
 
