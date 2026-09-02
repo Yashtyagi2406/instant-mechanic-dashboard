@@ -4,8 +4,9 @@ A production-quality full-stack dashboard for monitoring bookings, mechanics,
 customers, and revenue for a vehicle-repair business — built as a 48-hour
 take-home assignment for Instant Mechanic.
 
-> **Live demo:** *fill in after deployment*  
-> **API docs:** `https://api.YOUR_DOMAIN.com/api/docs`  
+> **Live demo:** [https://instant-mechanic-dashboard-yash.vercel.app](https://instant-mechanic-dashboard-yash.vercel.app)  
+> **API docs (Swagger):** [https://instant-mechanic-dashboard-88u8.onrender.com/api/docs](https://instant-mechanic-dashboard-88u8.onrender.com/api/docs)  
+> **API Base:** [https://instant-mechanic-dashboard-88u8.onrender.com/api](https://instant-mechanic-dashboard-88u8.onrender.com/api)  
 > **Default login:** `admin@instantmechanic.dev` / `Admin@123`
 
 ---
@@ -230,10 +231,10 @@ All protected routes require `Authorization: Bearer <token>`.
 4. Configure Nginx reverse proxy on port 80/443 pointing to `http://localhost:4000` with WebSocket upgrade headers (`Upgrade $http_upgrade`, `Connection "upgrade"`).
 5. Configure SSL certificate with Certbot: `sudo certbot --nginx -d api.YOUR_DOMAIN.com`.
 
-**Live URLs** *(fill in after deployment)*:
-- Frontend: https://instant-mechanic-dashboard.vercel.app
-- API: https://api.YOUR_DOMAIN.com
-- Swagger: https://api.YOUR_DOMAIN.com/api/docs
+**Live URLs**:
+- Frontend: [https://instant-mechanic-dashboard-yash.vercel.app](https://instant-mechanic-dashboard-yash.vercel.app)
+- API: [https://instant-mechanic-dashboard-88u8.onrender.com/api](https://instant-mechanic-dashboard-88u8.onrender.com/api)
+- Swagger: [https://instant-mechanic-dashboard-88u8.onrender.com/api/docs](https://instant-mechanic-dashboard-88u8.onrender.com/api/docs)
 
 ---
 
